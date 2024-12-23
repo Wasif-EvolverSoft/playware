@@ -242,7 +242,7 @@ Route::middleware('seller')->prefix('seller')->group(function () {
 
         Route::get('/all-products', [ProductsController::class, 'getAllProducts'])->name('seller.allProducts');
         Route::get('/add-new-product', [ProductsController::class, 'addNewProduct'])->name('seller.addNewProduct');
-        Route::get('/edit-product/{id}/{title}', [ProductsController::class, 'getEditProductsPage'])->name('seller.editProducts');
+        Route::get('/edit-product/{id}/{title}', [ProductsController::class, 'editUsedProduct'])->name('seller.editProducts');
     });
 
     // Packages

@@ -215,6 +215,171 @@ class ProductsController extends Controller
         //  return redirect(route('seller.allProducts'))->with(['success' => 'Product Uploaded Successfully']);
 
     }
+
+    public function editUsedProduct($id)
+    {
+        $product = Products::with('otherSingleProduct')->findOrFail($id);
+        // 'with' is optional if you want to load relationships like OtherSingleProducts.
+        // Adjust the relationship name as per your Model.
+
+        // Fetch categories, brands, etc.
+        $categories = Categories::all();
+        $brands = Brands::all();
+
+        return view('seller.Products.editUsedProduct', [
+            'product' => $product,
+            'categories' => $categories,
+            'brands' => $brands,
+        ]);
+    }
+
+    public function updateUsedProduct(Request $request, $id)
+    {
+        $product = Products::findOrFail($id);
+
+        // The same validation rules you already have, except images are sometimes optional
+        // if you wish to allow users to keep old images if no new image is uploaded.
+        $validate = $request->validate([
+            'productTitle'       => 'required|string',
+            'category'           => 'required|string',
+            'brand'              => 'nullable|string',
+            'warranty'           => 'required|string',
+            'year_of_making'     => 'required|string',
+            'amount_in_stock'    => 'required|string',
+            'current_price'      => 'required|string',
+            'sale_price'         => 'nullable|string',
+            'isRepairedOrOpened' => 'nullable|string',
+            'reason'             => $request->input('isRepairedOrOpened') == "on" ? 'required|string' : 'nullable|string',
+            'AboutThisitem'      => 'required|string',
+            'productDescription' => 'required|string',
+            // Images can now be nullable if you don’t require them to be replaced
+            'mainImage'          => 'nullable|mimes:png,jpg,jpeg,webp',
+            'firstImage'         => 'nullable|mimes:png,jpg,jpeg,webp',
+            'secondImage'        => 'nullable|mimes:png,jpg,jpeg,webp',
+            'thirdImage'         => 'nullable|mimes:png,jpg,jpeg,webp',
+            'fourthImage'        => 'nullable|mimes:png,jpg,jpeg,webp',
+            'fifthImage'         => 'nullable|mimes:png,jpg,jpeg,webp',
+            //Dynamic fields for ram, storage and monitor
+            'ramGeneration'      => 'nullable|string',
+            'ramClockSpeed'      => 'nullable|string',
+            'ramSize'            => 'nullable|string',
+            'storageType'        => 'nullable|string',
+            'storageSize'        => 'nullable|string',
+            'monitorPanelType'   => 'nullable|string',
+            'monitorRefreshRate' => 'nullable|string',
+            'monitorSize'        => 'nullable|string',
+            'monitorModelNo'     => 'nullable|string',
+        ]);
+
+        // Same folder path logic
+        $folderPath = 'user_folders/Product_Images/' . Auth::user()->id . '_' . $this->fullNameUnderscored;
+        if (!file_exists(public_path($folderPath))) {
+            mkdir(public_path($folderPath), 0777, true);
+        }
+
+        // ---- Handle images (only overwrite if a new file was uploaded) ----
+        if ($request->hasFile('mainImage')) {
+            $mainImage = $request->file('mainImage');
+            $mainImageName = time() . '_front_image.' . $mainImage->getClientOriginalExtension();
+            $mainImage->move(public_path($folderPath), $mainImageName);
+
+            // Overwrite only if uploaded
+            $product->mainImage = Auth::user()->id . '_' . $this->fullNameUnderscored . '/' . $mainImageName;
+        }
+
+        if ($request->hasFile('firstImage')) {
+            $firstImage = $request->file('firstImage');
+            $firstImageName = time() . '_first_image.' . $firstImage->getClientOriginalExtension();
+            $firstImage->move(public_path($folderPath), $firstImageName);
+
+            $product->firstImage = Auth::user()->id . '_' . $this->fullNameUnderscored . '/' . $firstImageName;
+        }
+
+        if ($request->hasFile('secondImage')) {
+            $secondImage = $request->file('secondImage');
+            $secondImageName = time() . '_second_image.' . $secondImage->getClientOriginalExtension();
+            $secondImage->move(public_path($folderPath), $secondImageName);
+
+            $product->secondImage = Auth::user()->id . '_' . $this->fullNameUnderscored . '/' . $secondImageName;
+        }
+
+        if ($request->hasFile('thirdImage')) {
+            $thirdImage = $request->file('thirdImage');
+            $thirdImageName = time() . '_third_image.' . $thirdImage->getClientOriginalExtension();
+            $thirdImage->move(public_path($folderPath), $thirdImageName);
+
+            $product->thirdImage = Auth::user()->id . '_' . $this->fullNameUnderscored . '/' . $thirdImageName;
+        }
+
+        if ($request->hasFile('fourthImage')) {
+            $fourthImage = $request->file('fourthImage');
+            $fourthImageName = time() . '_fourth_image.' . $fourthImage->getClientOriginalExtension();
+            $fourthImage->move(public_path($folderPath), $fourthImageName);
+
+            $product->fourthImage = Auth::user()->id . '_' . $this->fullNameUnderscored . '/' . $fourthImageName;
+        }
+
+        if ($request->hasFile('fifthImage')) {
+            $fifthImage = $request->file('fifthImage');
+            $fifthImageName = time() . '_fifth_image.' . $fifthImage->getClientOriginalExtension();
+            $fifthImage->move(public_path($folderPath), $fifthImageName);
+
+            $product->fifthImage = Auth::user()->id . '_' . $this->fullNameUnderscored . '/' . $fifthImageName;
+        }
+
+        // ---- Update other fields ----
+        $product->productTitle       = $validate['productTitle'];
+        $product->productCategory    = $validate['category'];
+        $product->brandName          = $request->input('brand') ?: 63; // if brand is empty, default
+        $product->warranty           = $validate['warranty'];
+        $product->yearOfProduct      = $validate['year_of_making'];
+        $product->productQuantity    = $validate['amount_in_stock'];
+        $product->originalPrice      = $validate['current_price'];
+        $product->SellPrice          = $request->input('sale_price') ?: null;
+        $product->productDescription = $validate['productDescription'];
+        $product->AboutThisitem      = $validate['AboutThisitem'];
+
+        if ($request->input('isRepairedOrOpened')) {
+            $product->repaired            = 1;
+            $product->explainAboutRepairing = $validate['reason'];
+        } else {
+            $product->repaired            = 0;
+            $product->explainAboutRepairing = null;
+        }
+
+        $product->save();
+
+        // ---- Update or insert related RAM/Storage/Monitor details ----
+        // If your `OtherSingleProducts` is always present (already created),
+        // you should fetch and update it. Otherwise, you might create a new row.
+        if ($validate['category'] == '5') { // RAM
+            $ram = OtherSingleProducts::firstOrNew(['productId' => $product->id]);
+            $ram->Type = $validate['ramGeneration'];
+            $ram->RRCS = $validate['ramClockSpeed'];
+            $ram->size = $validate['ramSize'];
+            $ram->save();
+        } elseif ($validate['category'] == '6') { // Storage
+            $storage = OtherSingleProducts::firstOrNew(['productId' => $product->id]);
+            $storage->Type = $validate['storageType'];
+            $storage->size = $validate['storageSize'];
+            $storage->save();
+        } elseif ($validate['category'] == '11') { // Monitor
+            $monitor = OtherSingleProducts::firstOrNew(['productId' => $product->id]);
+            $monitor->Type     = $validate['monitorPanelType'];
+            $monitor->RRCS     = $validate['monitorRefreshRate'];
+            $monitor->size     = $validate['monitorSize'];
+            $monitor->modelNo  = $validate['monitorModelNo'];
+            $monitor->save();
+        } else {
+            // If the product was previously RAM/Storage/Monitor and is now changed to something else,
+            // you might want to remove the old entry from OtherSingleProducts. This depends on your logic.
+        }
+
+        return response()->json(['success' => true, 'message' => 'Product Updated Successfully']);
+    }
+
+
+
     public function UploadUsedProducts(Request $request)
     {
         $validate = $request->validate([
@@ -236,12 +401,21 @@ class ProductsController extends Controller
             'thirdImage' => 'required|mimes:png,jpg,jpeg,webp',
             'fourthImage' => 'nullable|mimes:png,jpg,jpeg,webp',
             'fifthImage' => 'nullable|mimes:png,jpg,jpeg,webp',
+            //Dynamic fields for ram, storage and monitor
+            'ramGeneration' => 'nullable|string',
+            'ramClockSpeed' => 'nullable|string',
+            'ramSize' => 'nullable|string',
+            'storageType' => 'nullable|string',
+            'storageSize' => 'nullable|string',
+            'monitorPanelType' => 'nullable|string',
+            'monitorRefreshRate' => 'nullable|string',
+            'monitorSize' => 'nullable|string',
+            'monitorModelNo' => 'nullable|string',
         ], [
             'productTitle.required' => 'The product title is required.',
             'productTitle.string' => 'The product title must be a string.',
             'category.required' => 'The category is required.',
             'category.string' => 'The category must be a string.',
-            'brand.required' => 'The brand is required.',
             'brand.string' => 'The brand must be a string.',
             'warranty.required' => 'The warranty is required.',
             'warranty.string' => 'The warranty must be a string.',
@@ -251,7 +425,6 @@ class ProductsController extends Controller
             'amount_in_stock.string' => 'The amount in stock must be a string.',
             'current_price.required' => 'The current price is required.',
             'current_price.string' => 'The current price must be a string.',
-            'sale_price.required' => 'The sale price is required.',
             'sale_price.string' => 'The sale price must be a string.',
             'isRepairedOrOpened.string' => 'The value for "Is Repaired or Opened" must be a string.',
             'reason.required' => 'The reason is required when the item is marked as repaired or opened.',
@@ -273,7 +446,6 @@ class ProductsController extends Controller
         ]);
 
         $folderPath = 'user_folders/Product_Images/' . Auth::user()->id . '_' . $this->fullNameUnderscored;
-
 
         if (!file_exists(public_path($folderPath))) {
             mkdir(public_path($folderPath), 0777, true);
@@ -327,7 +499,6 @@ class ProductsController extends Controller
             $product->repaired = 0;
         }
 
-
         $product->yearOfProduct = $validate['year_of_making'];
         $product->warranty = $validate['warranty'];
 
@@ -338,6 +509,7 @@ class ProductsController extends Controller
         if ($request->input('AboutThisitem')) {
             $product->AboutThisitem = $validate['AboutThisitem'];
         }
+
 
         $product->productCategory = $validate['category'];
         $product->productQuantity = $validate['amount_in_stock'];
@@ -358,29 +530,28 @@ class ProductsController extends Controller
         if ($request->file('fifthImage')) {
             $product->fifthImage = Auth::user()->id . '_' . str_replace(' ', '_', $this->fullNameUnderscored) . '/' . $fifthImageName;
         }
-
         if (Auth::user()->approved != 0) {
             $product->approved = 1;
         } else {
             $product->approved = 0;
         }
+
         $product->save();
 
-
-        if ($request->input('productCategory') == '5') {
+        if ($request->input('category') == '5') { // RAM
             $ram = new OtherSingleProducts;
             $ram->productId = $product->id;
             $ram->Type = $validate['ramGeneration'];
             $ram->RRCS = $validate['ramClockSpeed'];
             $ram->size = $validate['ramSize'];
             $ram->save();
-        } elseif ($request->input('productCategory') == '6') {
+        } elseif ($request->input('category') == '6') { // Storage
             $storage = new OtherSingleProducts;
             $storage->productId = $product->id;
             $storage->Type = $validate['storageType'];
             $storage->size = $validate['storageSize'];
             $storage->save();
-        } elseif ($request->input('productCategory') == '11') {
+        } elseif ($request->input('category') == '11') { // Monitor
             $monitor = new OtherSingleProducts;
             $monitor->productId = $product->id;
             $monitor->Type = $validate['monitorPanelType'];
@@ -389,8 +560,9 @@ class ProductsController extends Controller
             $monitor->modelNo = $validate['monitorModelNo'];
             $monitor->save();
         }
+
+
         return response()->json(['success' => true, 'message' => 'Product Uploaded Successfully']);
-        //return redirect(route('seller.allProducts'))->with(['success' => 'Product Uploaded Successfully']);
     }
 
     public function uploadCompletePc(Request $request)
