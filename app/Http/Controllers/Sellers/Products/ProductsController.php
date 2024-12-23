@@ -209,9 +209,12 @@ class ProductsController extends Controller
             $monitor->save();
         }
 
-        return redirect(route('seller.allProducts'))->with(['success' => 'Product Uploaded Successfully']);
-    }
+        return response()->json(['success' => true, 'message' => 'Product Uploaded Successfully']);
 
+
+        //  return redirect(route('seller.allProducts'))->with(['success' => 'Product Uploaded Successfully']);
+
+    }
     public function UploadUsedProducts(Request $request)
     {
         $validate = $request->validate([
@@ -268,7 +271,6 @@ class ProductsController extends Controller
             'fourthImage.mimes' => 'The fourth image must be a file of type: png, jpg, jpeg, webp.',
             'fifthImage.mimes' => 'The fifth image must be a file of type: png, jpg, jpeg, webp.',
         ]);
-
 
         $folderPath = 'user_folders/Product_Images/' . Auth::user()->id . '_' . $this->fullNameUnderscored;
 
@@ -387,8 +389,8 @@ class ProductsController extends Controller
             $monitor->modelNo = $validate['monitorModelNo'];
             $monitor->save();
         }
-
-        return redirect(route('seller.allProducts'))->with(['success' => 'Product Uploaded Successfully']);
+        return response()->json(['success' => true, 'message' => 'Product Uploaded Successfully']);
+        //return redirect(route('seller.allProducts'))->with(['success' => 'Product Uploaded Successfully']);
     }
 
     public function uploadCompletePc(Request $request)

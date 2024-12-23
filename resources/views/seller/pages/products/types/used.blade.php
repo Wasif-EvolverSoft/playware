@@ -22,7 +22,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('auth.UploadUsedProduct') }}" method="POST" enctype="multipart/form-data">
+                    <form id="uploadUsedProductForm" action="{{ route('auth.UploadUsedProduct') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="ProductType" value="1">
                         <div class="row">
@@ -292,8 +292,8 @@
                                 </label>
                             </div>
                         </div>
-
-                        <button class="btn btn-primary mt-3 w-100" id="uploadProduct">Upload Product</button>
+                        <div id="formMessage"></div>
+                        <button class="btn btn-primary mt-3 w-100" id="uploadUsedProductButton">Upload Product</button>
                     </form>
                 </div>
             </div>

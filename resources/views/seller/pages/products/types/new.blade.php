@@ -22,7 +22,8 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('auth.UploadNewProduct') }}" method="POST" enctype="multipart/form-data">
+                    <form id="uploadProductForm" action="{{ route('auth.UploadNewProduct') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="ProductType" value="2">
                         <div class="row">
@@ -276,8 +277,8 @@
                             </div>
 
                         </div>
-
-                        <button class="btn btn-primary mt-3 w-100" id="uploadProduct">Upload Product</button>
+                        <div id="formMessage"></div>
+                        <button class="btn btn-primary mt-3 w-100" id="uploadProductButton">Upload Product</button>
                     </form>
                 </div>
             </div>
@@ -351,126 +352,126 @@
 
             if ($(this).val() === '5') { // RAM
                 let RAM = `
-                <div id="furthurRequirements">
-                    <hr/>
-                        <h2>Ram Details</h2>
-                        <div class="row">
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="ramGeneration">RAM Generation</label>
-                                    <select id="ramGeneration" name="ramGeneration" class="form-control" required="">
-                                        <option value="0">Please Select RAM Generation</option>
-                                        <option value="DDR2">DDR2</option>
-                                        <option value="DDR3">DDR3</option>
-                                        <option value="DDR4">DDR4</option>
-                                        <option value="DDR5">DDR5</option>
-                                    </select>
+            <div id="furthurRequirements">
+                <hr/>
+                    <h2>Ram Details</h2>
+                    <div class="row">
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="ramGeneration">RAM Generation</label>
+                                <select id="ramGeneration" name="ramGeneration" class="form-control" required="">
+                                    <option value="0">Please Select RAM Generation</option>
+                                    <option value="DDR2">DDR2</option>
+                                    <option value="DDR3">DDR3</option>
+                                    <option value="DDR4">DDR4</option>
+                                    <option value="DDR5">DDR5</option>
+                                </select>
 
-                                </div>
-                            </div>
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="ramClockSpeed">Clock Speed</label>
-                                    <input type="text" id="ramClockSpeed" name="ramClockSpeed" required="" class="form-control" placeholder="Eg. 3200 MHz">
-                                </div>
-                            </div>
-
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="ramSize">RAM Size</label>
-                                    <input type="text" id="ramSize" name="ramSize" required="" class="form-control" placeholder="Eg. 8GB">
-                                </div>
                             </div>
                         </div>
-                    <hr/>
-                </div>
-                `
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="ramClockSpeed">Clock Speed</label>
+                                <input type="text" id="ramClockSpeed" name="ramClockSpeed" required="" class="form-control" placeholder="Eg. 3200 MHz">
+                            </div>
+                        </div>
+
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="ramSize">RAM Size</label>
+                                <input type="text" id="ramSize" name="ramSize" required="" class="form-control" placeholder="Eg. 8GB">
+                            </div>
+                        </div>
+                    </div>
+                <hr/>
+            </div>
+            `
                 $('#aboutThisItemContainer').before(RAM);
 
             } else if ($(this).val() === '6') { // Storage
                 let Storage = `
-                <div id="furthurRequirements">
-                    <hr/>
-                        <h2>Storage Details</h2>
-                        <div class="row">
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="storageType">Storage Type</label>
-                                    <select id="storageType" value="" name="storageType" class="form-control" required="">
-                                        <option value="">Please Select Storage Type</option>
-                                        <option value="HDD">HDD</option>
-                                        <option value="SSD">SSD</option>
-                                        <option value="NVMe">NVMe</option>
-                                        <option value="M.2">M.2</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="storageSize">Storage Size</label>
-                                    <input type="text" id="storageSize" value="" name="storageSize" required="" class="form-control" placeholder="Eg. 500GB">
-                                </div>
+            <div id="furthurRequirements">
+                <hr/>
+                    <h2>Storage Details</h2>
+                    <div class="row">
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="storageType">Storage Type</label>
+                                <select id="storageType" value="" name="storageType" class="form-control" required="">
+                                    <option value="">Please Select Storage Type</option>
+                                    <option value="HDD">HDD</option>
+                                    <option value="SSD">SSD</option>
+                                    <option value="NVMe">NVMe</option>
+                                    <option value="M.2">M.2</option>
+                                </select>
                             </div>
                         </div>
-                    <hr/>
-                </div>
-                `
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="storageSize">Storage Size</label>
+                                <input type="text" id="storageSize" value="" name="storageSize" required="" class="form-control" placeholder="Eg. 500GB">
+                            </div>
+                        </div>
+                    </div>
+                <hr/>
+            </div>
+            `
                 $('#aboutThisItemContainer').before(Storage);
             } else if ($(this).val() === '11') { // Monitor
                 let Monitors = `
-                <div id="furthurRequirements">
-                    <hr/>
-                        <h2>Monitor Details</h2>
-                        <div class="row">
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="monitorPanelType">Panel Type</label>
-                                    <select id="monitorPanelType" name="monitorPanelType" class="form-control" required="">
-                                        <option value="0">Please Select Panel Type</option>
-                                        <option value="IPS">IPS</option>
-                                        <option value="VA">VA</option>
-                                        <option value="TN">TN</option>
-                                        <option value="Simple LCD">Simple LCD</option>
-                                        <option value="Simple LED">Simple LED</option>
-                                        <option value="OLED">OLED</option>
-                                    </select>
+            <div id="furthurRequirements">
+                <hr/>
+                    <h2>Monitor Details</h2>
+                    <div class="row">
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="monitorPanelType">Panel Type</label>
+                                <select id="monitorPanelType" name="monitorPanelType" class="form-control" required="">
+                                    <option value="0">Please Select Panel Type</option>
+                                    <option value="IPS">IPS</option>
+                                    <option value="VA">VA</option>
+                                    <option value="TN">TN</option>
+                                    <option value="Simple LCD">Simple LCD</option>
+                                    <option value="Simple LED">Simple LED</option>
+                                    <option value="OLED">OLED</option>
+                                </select>
 
-                                </div>
-                            </div>
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="monitorRefreshRate">Refresh Rate</label>
-                                    <select id="monitorRefreshRate" name="monitorRefreshRate" class="form-control" required="">
-                                        <option value="0">Please Select Refresh Rate</option>
-                                        <option value="60Hz">60Hz</option>
-                                        <option value="75Hz">75Hz</option>
-                                        <option value="100Hz">100Hz</option>
-                                        <option value="120Hz">120Hz</option>
-                                        <option value="144Hz">144Hz</option>
-                                        <option value="165Hz">165Hz</option>
-                                        <option value="180Hz">180Hz</option>
-                                        <option value="240Hz">240Hz</option>
-                                        <option value="360Hz">360Hz</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="monitorSize">Size</label>
-                                    <input type="text" id="monitorSize" name="monitorSize" required="" class="form-control" placeholder="Eg. 22 inches">
-                                </div>
-                            </div>
-
-                            <div class="col-md col-sm-12">
-                                <div class="form-group">
-                                    <label for="monitorModelNo">Model No. (optional)</label>
-                                    <input type="text" id="monitorModelNo" name="monitorModelNo" class="form-control" placeholder="Eg. XL2546K">
-                                </div>
                             </div>
                         </div>
-                    <hr/>
-                </div>
-                `
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="monitorRefreshRate">Refresh Rate</label>
+                                <select id="monitorRefreshRate" name="monitorRefreshRate" class="form-control" required="">
+                                    <option value="0">Please Select Refresh Rate</option>
+                                    <option value="60Hz">60Hz</option>
+                                    <option value="75Hz">75Hz</option>
+                                    <option value="100Hz">100Hz</option>
+                                    <option value="120Hz">120Hz</option>
+                                    <option value="144Hz">144Hz</option>
+                                    <option value="165Hz">165Hz</option>
+                                    <option value="180Hz">180Hz</option>
+                                    <option value="240Hz">240Hz</option>
+                                    <option value="360Hz">360Hz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="monitorSize">Size</label>
+                                <input type="text" id="monitorSize" name="monitorSize" required="" class="form-control" placeholder="Eg. 22 inches">
+                            </div>
+                        </div>
+
+                        <div class="col-md col-sm-12">
+                            <div class="form-group">
+                                <label for="monitorModelNo">Model No. (optional)</label>
+                                <input type="text" id="monitorModelNo" name="monitorModelNo" class="form-control" placeholder="Eg. XL2546K">
+                            </div>
+                        </div>
+                    </div>
+                <hr/>
+            </div>
+            `
 
                 $('#aboutThisItemContainer').before(Monitors);
             }
@@ -509,9 +510,16 @@
         });
 
 
-        var uploadProductForm = document.querySelector('form[action="{{ route('auth.UploadNewProduct') }}"]');
+
+        var uploadProductForm = document.getElementById('uploadProductForm');
+        var uploadProductButton = document.getElementById('uploadProductButton');
+        var formMessage = document.getElementById('formMessage');
+
         uploadProductForm.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Remove all previous errors
+            uploadProductForm.querySelectorAll('.text-danger').forEach(el => el.remove());
 
             let AboutThisItem = document.querySelectorAll('.AboutThisItem');
             let aboutThisItemhidden = document.querySelector('#aboutThisItemhidden');
@@ -524,7 +532,54 @@
             let itemPointsJSON = JSON.stringify(AboutThisItemValues);
             aboutThisItemhidden.value = itemPointsJSON;
 
-            this.submit();
-        });
+            uploadProductButton.disabled = true;
+            formMessage.textContent = 'Uploading Product...';
+            formMessage.style.color = 'black';
+
+            const formData = new FormData(uploadProductForm);
+
+            fetch(uploadProductForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                }).then(response => response.json())
+                .then(data => {
+                    formMessage.textContent = data.message;
+                    if (data.success) {
+                        formMessage.style.color = 'green';
+                        uploadProductForm.reset();
+                        localStorage.clear(); // remove Images form local Storage
+                        window.location.href = "{{ route('seller.allProducts') }}"; // Redirect
+
+                    } else {
+                        formMessage.style.color = 'red';
+                        let errors = data.errors;
+
+                        if (errors) {
+                            for (let key in errors) {
+                                let field = uploadProductForm.querySelector(`[name="${key}"]`);
+                                if (field) {
+                                    let errorDiv = document.createElement('span');
+                                    errorDiv.classList.add('text-danger');
+                                    errorDiv.textContent = errors[key];
+                                    field.parentNode.insertBefore(errorDiv, field
+                                    .nextSibling); // Insert error after field
+                                }
+                            }
+                        }
+
+                    }
+                    uploadProductButton.disabled = false;
+                })
+                .catch(error => {
+                    formMessage.textContent = 'An error occurred. Please try again.';
+                    formMessage.style.color = "red";
+                    uploadProductButton.disabled = false;
+                })
+
+
+        })
     </script>
 @endsection
